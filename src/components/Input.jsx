@@ -17,6 +17,7 @@ const Input = () => {
         handleClearCompleted
     } = useContext(TodosContext);
 
+    //updating tasks on left block
     const tasksLeft = filteredTodos.filter(todo => !todo.completed).length;
     
   return (

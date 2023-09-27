@@ -10,6 +10,8 @@
   background: linear-gradient(to top, #6e7174, #232526);
   height: 100vh;
 }
+
+/* header */
 .header {
     width: 100%;
     height: 20%;
@@ -69,12 +71,16 @@
       );
     }
 }
+/* *****************************main body *************************************** */
 .todoapp{
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
+
+/* ********************************************left block************************************** */
 .leftside{
   width: 50%;
   height: 100vh;
@@ -194,6 +200,7 @@ ul {
 
 }
 
+/* all filters */
 .task-filters {
   background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     width: 85%;
@@ -230,6 +237,8 @@ ul {
     /* font-weight: 500; */
     color: rgb(76, 160, 172);
 }
+
+/* task updates */
 .task-left{
   font-size: 1.1rem;
   font-weight: 700;
@@ -255,7 +264,7 @@ h3 {
     padding: 20px;
 }
 
-
+/* ******************************************right block ********************************* */
 .rightside{
   width: 50%;
   margin-top: 5%;

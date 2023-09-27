@@ -14,12 +14,15 @@ export const TodosContextProvider = ({ children }) => {
         fetctTodos();
     }, []);
 
+    //fetching all todos
     const fetctTodos = async () => {
             const res = await fetch('https://jsonplaceholder.typicode.com/todos');
             let data = await res.json();
             setAllTodos(data);
             setFilteredTodos(data);
-        }
+    }
+    
+    //all the filters
     const handleFilterClick = (filter) => {
         if (filter === "all") {
             setFilter({ all: true, completed: false, uncompleted: false });
@@ -38,7 +41,8 @@ export const TodosContextProvider = ({ children }) => {
     }
    
 
-    const handleAddTodos = async() => {
+    const handleAddTodos = async () => {
+        // editing a todo
         if (UpdateData.id) {
             const res=await fetch(`https://jsonplaceholder.typicode.com/todos/${UpdateData.id}`, {
                 method: 'PUT',
@@ -62,6 +66,8 @@ export const TodosContextProvider = ({ children }) => {
             })
             // console.log(updatedTodos)
             setFilteredTodos(updatedTodos)
+
+            // adding a new todo
         } else {
             
             const todo =
@@ -72,8 +78,9 @@ export const TodosContextProvider = ({ children }) => {
                 "completed": false,
             }
             // console.log(todo);
-        
-            const res = await fetch('https://jsonplaceholder.typicode.com/todos', {
+            try {
+                // console.log("hi")
+               const res = await fetch('https://jsonplaceholder.typicode.com/todos', {
                 method: 'POST',
                 body: JSON.stringify(todo),
                 headers: {
@@ -84,26 +91,38 @@ export const TodosContextProvider = ({ children }) => {
             setFilteredTodos([
                 ...filteredTodos,
                 data
-            ])
+            ]) 
+            } catch (e) {
+                console.log(e)
+            }
+            
         }
         setInput("")
     }
 
-    const handleDelete = async(id) => {
-        const res=await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
-            method: 'DELETE',
-        });
-        if (res.status === 200) {
-            const updatedTodos = filteredTodos.filter(todo => todo.id!==id)
-            setFilteredTodos(updatedTodos)
+    // deleting a todo
+    const handleDelete = async (id) => {
+        try {
+        
+            const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+                method: 'DELETE',
+            });
+            if (res.status === 200) {
+                const updatedTodos = filteredTodos.filter(todo => todo.id !== id)
+                setFilteredTodos(updatedTodos)
+            }
+        } catch (e) {
+            console.log(e)
         }
-        console.log(res)
     }
+
+    // completing a todo
     const handleChecked = async (id) => {
         console.log(id)
         const todo = filteredTodos.filter(t => t.id === id);
         const remainingTodos=filteredTodos.filter(t => t.id !== id);
-        const res=await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+        try {
+            const res=await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
                 method: 'PUT',
                 body: JSON.stringify({
                     ...todo[0],
@@ -113,18 +132,24 @@ export const TodosContextProvider = ({ children }) => {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
             })
-        const data = await res.json();
-        setFilteredTodos([
-            ...remainingTodos,
-            data
-        ])
+            const data = await res.json();
+            setFilteredTodos([
+                ...remainingTodos,
+                data
+            ])
+        } catch (e) {
+            console.log(e)
+        }
     }
+
+    // handling edit button
     const handleEditBtn = async (id) => {
         const todo = AllTodos.filter(t => t.id === id);
         setInput(todo[0].title)
         setUpdateData({ showUpdate: true, ...todo[0] });
     }
 
+    // completing all todos
     const handleCompleteAll = () => {
         const complete_all_todos = AllTodos.map(todo => {
             todo.completed = true
@@ -132,10 +157,15 @@ export const TodosContextProvider = ({ children }) => {
         })
         setFilteredTodos(complete_all_todos);
     }
+
+    // deleting the completed todos
     const handleClearCompleted = () => {
         const clear_complete_todos = AllTodos.filter(todo => !todo.completed)
         setFilteredTodos(clear_complete_todos)
     }
+
+
+    //all state values
     let values = {
         filteredTodos,
         setFilteredTodos,
